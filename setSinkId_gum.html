@@ -3,6 +3,7 @@
 <audio controls="controls" id="player"></audio>
 <button id="b3" type"button">Set Sink 1</button>
 <button id="b4" type"button">Set Sink 2</button>
+<button id="b5" type"button">Set Sink 3</button>
 
 <div id="div"/>
 
@@ -55,6 +56,17 @@ b4.onclick = () =>
 	})
 	.catch( (error) => {
 	  log("Sink 2: promise rejected: " + error);
+	});
+}
+
+b5.onclick = () =>
+{
+  player.setSinkId(audioDevices[2].deviceId)
+	.then( () => {
+	  log("Sink 3: Audio is being played from sink 3: " + player.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink 3: promise rejected: " + error);
 	});
 }
 
