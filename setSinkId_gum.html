@@ -1,0 +1,62 @@
+<button type="button" id="b1"> gUM</button>
+<button type="button" id="b2"> stop</button>
+<audio controls="controls" id="player"></audio>
+<button id="b3" type"button">Set Sink 1</button>
+<button id="b4" type"button">Set Sink 2</button>
+
+<div id="div"/>
+
+<script>
+var log = msg => div.innerHTML += msg + "<br>";
+
+player.volume = 0.1;
+
+let stream;
+b1.onclick = () => {
+  navigator.mediaDevices.getUserMedia({audio: true})
+    .then((s) => {
+      stream = s;
+      player.srcObject = stream;
+      player.play();
+    })
+    .catch((err) => {
+      log("gUM failed: " + err);
+    });
+}
+
+b2.onclick = () => {
+    if (stream)
+        stream.getTracks()[0].stop();
+}
+
+let audioDevices = [];
+navigator.mediaDevices.enumerateDevices()
+.then((devices) => {
+  audioDevices = devices.filter(device => device.kind === 'audiooutput');
+  log("Found " + audioDevices.length + " output devices");
+});
+
+b3.onclick = () => 
+{
+  player.setSinkId(audioDevices[0].deviceId)
+	.then( () => {
+	  log("Sink 1: Audio is being played from sink 1: " + player.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink 1: promise rejected: " + error);
+  });
+}
+
+b4.onclick = () =>
+{
+  player.setSinkId(audioDevices[1].deviceId)
+	.then( () => {
+	  log("Sink 2: Audio is being played from sink 2: " + player.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink 2: promise rejected: " + error);
+	});
+}
+
+</script>
+

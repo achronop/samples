@@ -1,0 +1,44 @@
+<audio id="a1" src="a2002011001-e02-16kHz.wav" controls></audio>
+<button id="b1" type"button">Set Sink 1</button>
+<button id="b2" type"button">Set Sink 2</button>
+<div id="div"/>
+
+<script>
+var log = msg => div.innerHTML += msg + "<br>";
+
+a1.volume = 0.1;
+
+let audioDevices = [];
+navigator.mediaDevices.enumerateDevices()
+.then((devices) => {
+  audioDevices = devices.filter(device => device.kind === 'audiooutput');
+  log("Found " + audioDevices.length + " output devices");
+});
+
+b1.onclick = () => 
+{
+  a1.setSinkId(audioDevices[0].deviceId)
+	.then( () => {
+	  log("Sink 1: Audio is being played from sink 1: " + a1.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink 1: promise rejected: " + error);
+  });
+}
+
+b2.onclick = () =>
+{
+  a1.setSinkId(audioDevices[1].deviceId)
+	.then( () => {
+	  log("Sink 2: Audio is being played from sink 2: " + a1.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink 2: promise rejected: " + error);
+	});
+}
+
+let au = new AudioContext();
+let se = au.createMediaElementSource(a1);
+
+se.connect(au.destination);
+</script>
