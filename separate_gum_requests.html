@@ -1,0 +1,74 @@
+<button type="button" id="b1">Audio gUM</button>
+<button type="button" id="b2">stop</button>
+<audio controls="controls" id="player1"></audio>
+
+</p>
+
+<button type="button" id="b3">Video gUM</button>
+<button type="button" id="b4">stop</button>
+<video controls="controls" id="player2"></video>
+
+</p>
+
+<button type="button" id="b5">Audio Video gUM</button>
+<button type="button" id="b6">stop</button>
+<video controls="controls" id="player3"></video>
+
+<script>
+
+let stream;
+b1.onclick = () => {
+  navigator.mediaDevices.getUserMedia({audio: true})
+  .then((s) => {
+	  stream = s;
+	  player1.srcObject = stream;
+	  player1.play();
+  })
+  .catch((err) => {
+    console.log("Audio gUM failed: " + err);
+  });
+}
+
+b2.onclick = () => {
+  if (stream)
+    stream.getTracks()[0].stop();
+}
+
+let stream2;
+b3.onclick = () => {
+  navigator.mediaDevices.getUserMedia({video: true})
+  .then((s) => {
+    stream2 = s;
+    player2.srcObject = stream2;
+    player2.play();
+  })
+  .catch((err) => {
+    console.log("Video gUM failed: " + err);
+  });
+}
+
+b4.onclick = () => {
+  if (stream2)
+    stream2.getTracks()[0].stop();
+}
+
+let stream3;
+b5.onclick = () => {
+  navigator.mediaDevices.getUserMedia({video: true, audio: true})
+  .then((s) => {
+    stream3 = s;
+    player3.srcObject = stream3;
+    player3.play();
+  })
+  .catch((err) => {
+    console.log("Audio Video gUM failed: " + err);
+  });
+}
+
+b6.onclick = () => {
+  if (stream3) {
+    stream3.getTracks()[0].stop();
+    stream3.getTracks()[1].stop();
+  }
+}
+</script>
