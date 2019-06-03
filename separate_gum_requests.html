@@ -18,6 +18,17 @@
 
 let stream;
 b1.onclick = () => {
+  let stream2;
+  navigator.mediaDevices.getUserMedia({video: true})
+  .then((s) => {
+    stream2 = s;
+    player2.srcObject = stream2;
+    player2.play();
+  })
+  .catch((err) => {
+    console.log("Video gUM failed: " + err);
+  });
+
   navigator.mediaDevices.getUserMedia({audio: true})
   .then((s) => {
 	  stream = s;

@@ -1,0 +1,23 @@
+<div id="div"><br></div>
+
+<script>
+var log = msg => div.innerHTML += msg + "<br>";
+
+const videoConfiguration = {
+    type: 'file',
+    video: {
+        contentType: "video/mp4;codecs=av1",
+        width: 800,
+        height: 600,
+        bitrate: 10000,
+        framerate: 15
+     }
+};
+
+navigator.mediaCapabilities.decodingInfo(videoConfiguration).then(result => {
+    log('This configuration is:') ;
+    log((result.supported ? '' : 'not ') + 'supported ');
+    log((result.smooth ? '' : 'not ') + 'smooth');
+    log((result.powerEfficient ? '' : 'not ') + 'power efficient.')
+});
+</script>
