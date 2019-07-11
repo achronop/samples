@@ -1,3 +1,5 @@
+<button id="b" type"button">Get Media Capabilities</button>
+
 <div id="div"><br></div>
 
 <script>
@@ -14,10 +16,18 @@ const videoConfiguration = {
      }
 };
 
-navigator.mediaCapabilities.decodingInfo(videoConfiguration).then(result => {
-    log('This configuration is:') ;
-    log((result.supported ? '' : 'not ') + 'supported ');
-    log((result.smooth ? '' : 'not ') + 'smooth');
-    log((result.powerEfficient ? '' : 'not ') + 'power efficient.')
-});
+log(JSON.stringify(videoConfiguration));
+log("");
+
+b.onclick = () =>
+{
+    navigator.mediaCapabilities.decodingInfo(videoConfiguration).then(result => {
+        log('This configuration is:') ;
+        log((result.supported ? '' : 'not ') + 'supported ');
+        log((result.smooth ? '' : 'not ') + 'smooth');
+        log((result.powerEfficient ? '' : 'not ') + 'power efficient.');
+        log("");
+    });
+}
+
 </script>
