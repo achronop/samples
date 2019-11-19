@@ -4,6 +4,7 @@
 <button id="b2" type"button">Set Sink 2</button>
 <button id="b2b" type"button">Set Sink 3</button>
 <button id="b3" type"button">Set Unknown Sink</button>
+<button id="b7" type"button">Set default Sink</button>
 </p>
 <audio id="audio1" src="a2002011001-e02-16kHz.wav" controls></audio>
 <p/>
@@ -11,6 +12,7 @@
 <button id="b5" type"button">Set Sink 2</button>
 <button id="b5b" type"button">Set Sink 3</button>
 <button id="b6" type"button">Set Unknown Sink</button>
+<button id="b8" type"button">Set default Sink</button>
 
 <div id="div"/>
 <script>
@@ -71,6 +73,17 @@ b3.onclick = () =>
 	});
 }
 
+b7.onclick = () =>
+{
+  audio.setSinkId("")
+	.then( () => {
+	  log("Default Sink: Audio is being played from default sink: " + audio.sinkId);
+	})
+	.catch( (error) => {
+	  log("Default Sink: Audio promise rejected: " + error);
+	});
+}
+
 b4.onclick = () => 
 {
   audio1.setSinkId(audioDevices[0].deviceId)
@@ -112,6 +125,17 @@ b6.onclick = () =>
 	})
 	.catch( (error) => {
 	  log("Unknown Sink: Audio1 promise rejected: " + error);
+	});
+}
+
+b8.onclick = () =>
+{
+  audio1.setSinkId("")
+	.then( () => {
+	  log("Default Sink: Audio1 is being played from: " + audio1.sinkId);
+	})
+	.catch( (error) => {
+	  log("Default Sink: Audio1 promise rejected: " + error);
 	});
 }
 
