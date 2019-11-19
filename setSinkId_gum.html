@@ -10,6 +10,7 @@
 <button id="b3" type"button">Set Sink 1</button>
 <button id="b4" type"button">Set Sink 2</button>
 <button id="b5" type"button">Set Sink 3</button>
+<button id="b10" type"button">Set Default Sink</button>
 
 <div id="div"/>
 
@@ -107,6 +108,17 @@ b5.onclick = () =>
 	.catch( (error) => {
 	  log("Sink 3: promise rejected: " + error);
 	});
+}
+
+b10.onclick = () =>
+{
+  player.setSinkId("")
+	.then( () => {
+	  log("Sink default: Audio is being played from sink default: " + player.sinkId);
+	})
+	.catch( (error) => {
+	  log("Sink default: promise rejected: " + error);
+  });
 }
 
 </script>
