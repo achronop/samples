@@ -1,24 +1,42 @@
-<video controls="controls" id="player"></video>
-<p/>
+<p>
+Intial stream goes to Player 1.
+</p>
 <button type="button" id="b1">gUM audio</button>
 <button type="button" id="b6">gUM video</button>
 <button type="button" id="b7">gUM audio&video</button>
 <button type="button" id="b11">Audio Context</button>
-<button type="button" id="b8">src = null</button>
-<button type="button" id="b9">src = wav</button>
 <button type="button" id="b2">stop</button>
+<p/>
+<video controls="controls" id="player"></video>
 <p/>
 <button id="b3" type"button">Set Sink 1</button>
 <button id="b4" type"button">Set Sink 2</button>
 <button id="b5" type"button">Set Sink 3</button>
 <button id="b10" type"button">Set Default Sink</button>
+<p/>
+<button type="button" id="b8">src = null</button>
+<button type="button" id="b9">src = wav</button>
+<p/>
+<video controls="controls" id="player2"></video>
+<p/>
+<button id="b16" type"button">Set stream to Player 2</button>
+<p/>
+<button id="b12" type"button">Set Sink 1</button>
+<button id="b13" type"button">Set Sink 2</button>
+<button id="b14" type"button">Set Sink 3</button>
+<button id="b15" type"button">Set Default Sink</button>
+<p/>
+<button type="button" id="b17">src = null</button>
+<button type="button" id="b18">src = wav</button>
+<p/>
 
 <div id="div"/>
 
 <script>
 var log = msg => div.innerHTML += msg + "<br>";
 
-player.volume = 0.4;
+player.volume = 0.3;
+player.volume = 0.3;
 
 let stream;
 b1.onclick = () => {
@@ -97,10 +115,10 @@ b3.onclick = () =>
 {
   player.setSinkId(audioDevices[0].deviceId)
 	.then( () => {
-	  log("Sink 1: Audio is being played from sink 1: " + player.sinkId);
+	  log("Player 1: Audio is being played from sink 1: " + player.sinkId);
 	})
 	.catch( (error) => {
-	  log("Sink 1: promise rejected: " + error);
+	  log("Player 1: Sink 1 promise rejected: " + error);
   });
 }
 
@@ -108,10 +126,10 @@ b4.onclick = () =>
 {
   player.setSinkId(audioDevices[1].deviceId)
 	.then( () => {
-	  log("Sink 2: Audio is being played from sink 2: " + player.sinkId);
+	  log("Player 1: Audio is being played from sink 2: " + player.sinkId);
 	})
 	.catch( (error) => {
-	  log("Sink 2: promise rejected: " + error);
+	  log("Player 1: Sink 2 promise rejected: " + error);
 	});
 }
 
@@ -119,10 +137,10 @@ b5.onclick = () =>
 {
   player.setSinkId(audioDevices[2].deviceId)
 	.then( () => {
-	  log("Sink 3: Audio is being played from sink 3: " + player.sinkId);
+	  log("Player 1: Audio is being played from sink 3: " + player.sinkId);
 	})
 	.catch( (error) => {
-	  log("Sink 3: promise rejected: " + error);
+	  log("Player 1: Sink 3 promise rejected: " + error);
 	});
 }
 
@@ -130,11 +148,70 @@ b10.onclick = () =>
 {
   player.setSinkId("")
 	.then( () => {
-	  log("Sink default: Audio is being played from sink default: " + player.sinkId);
+	  log("Player 1: Audio is being played from sink default: " + player.sinkId);
 	})
 	.catch( (error) => {
-	  log("Sink default: promise rejected: " + error);
+	  log("Player 1: Sink default promise rejected: " + error);
   });
+}
+
+b12.onclick = () =>
+{
+  player2.setSinkId(audioDevices[0].deviceId)
+	.then( () => {
+	  log("Player 2: Audio is being played from sink 1: " + player2.sinkId);
+	})
+	.catch( (error) => {
+	  log("Player 2: Sink 1 promise rejected: " + error);
+  });
+}
+
+b13.onclick = () =>
+{
+  player2.setSinkId(audioDevices[1].deviceId)
+	.then( () => {
+	  log("Player 2: Audio is being played from sink 2: " + player2.sinkId);
+	})
+	.catch( (error) => {
+	  log("Player 2: Sink 2 promise rejected: " + error);
+	});
+}
+
+b14.onclick = () =>
+{
+  player2.setSinkId(audioDevices[2].deviceId)
+	.then( () => {
+	  log("Player 2: Audio is being played from sink 3: " + player2.sinkId);
+	})
+	.catch( (error) => {
+	  log("Player 2: Sink 3 promise rejected: " + error);
+	});
+}
+
+b15.onclick = () =>
+{
+  player2.setSinkId("")
+	.then( () => {
+	  log("Player 2: Audio is being played from sink default: " + player2.sinkId);
+	})
+	.catch( (error) => {
+	  log("Player 2: Sink default promise rejected: " + error);
+  });
+}
+
+b16.onclick = () =>
+{
+  player2.srcObject = stream;
+  player2.play();
+}
+
+b17.onclick = () => {
+    player2.srcObject = null;
+    player2.src = null;
+}
+
+b18.onclick = () => {
+    player2.src="a2002011001-e02-16kHz.wav";
 }
 
 </script>
