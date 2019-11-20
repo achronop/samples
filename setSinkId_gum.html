@@ -3,6 +3,7 @@
 <button type="button" id="b1">gUM audio</button>
 <button type="button" id="b6">gUM video</button>
 <button type="button" id="b7">gUM audio&video</button>
+<button type="button" id="b11">Audio Context</button>
 <button type="button" id="b8">src = null</button>
 <button type="button" id="b9">src = wav</button>
 <button type="button" id="b2">stop</button>
@@ -17,7 +18,7 @@
 <script>
 var log = msg => div.innerHTML += msg + "<br>";
 
-player.volume = 0.1;
+player.volume = 0.4;
 
 let stream;
 b1.onclick = () => {
@@ -54,6 +55,21 @@ b7.onclick = () => {
     .catch((err) => {
       log("gUM video failed: " + err);
     });
+}
+
+b11.onclick = () => {
+  const ac = new AudioContext(/*{sampleRate: 44100}*/);
+  const osc = ac.createOscillator();
+  const gain = ac.createGain();
+  const dest = ac.createMediaStreamDestination();
+
+  osc.connect(gain);
+  gain.connect(dest);
+  osc.start();
+
+  stream = dest.stream;
+  player.srcObject = stream;
+  player.play();
 }
 
 b8.onclick = () => {
