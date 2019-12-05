@@ -5,6 +5,7 @@ Intial stream goes to Player 1.
 <button type="button" id="b6">gUM video</button>
 <button type="button" id="b7">gUM audio&video</button>
 <button type="button" id="b11">Audio Context</button>
+<button type="button" id="b19">Many Tracks</button>
 <button type="button" id="b2">stop</button>
 <p/>
 <video controls="controls" id="player"></video>
@@ -76,7 +77,7 @@ b7.onclick = () => {
 }
 
 b11.onclick = () => {
-  const ac = new AudioContext(/*{sampleRate: 44100}*/);
+  const ac = new AudioContext({sampleRate: 44100});
   const osc = ac.createOscillator();
   const gain = ac.createGain();
   const dest = ac.createMediaStreamDestination();
@@ -91,17 +92,17 @@ b11.onclick = () => {
 }
 
 b8.onclick = () => {
-    player.srcObject = null;
-    player.src = null;
+  player.srcObject = null;
+  player.src = null;
 }
 
 b9.onclick = () => {
-    player.src="a2002011001-e02-16kHz.wav";
+  player.src="a2002011001-e02-16kHz.wav";
 }
 
 b2.onclick = () => {
-    if (stream)
-        stream.getTracks()[0].stop();
+  if (stream)
+    stream.getTracks().forEach(track => track.stop());
 }
 
 let audioDevices = [];
@@ -206,12 +207,51 @@ b16.onclick = () =>
 }
 
 b17.onclick = () => {
-    player2.srcObject = null;
-    player2.src = null;
+  player2.srcObject = null;
+  player2.src = null;
 }
 
 b18.onclick = () => {
-    player2.src="a2002011001-e02-16kHz.wav";
+  player2.src="a2002011001-e02-16kHz.wav";
+}
+
+b19.onclick = () => {
+  const ac1 = new AudioContext();
+  const osc1 = ac1.createOscillator();
+  const dest1 = ac1.createMediaStreamDestination();
+  const gain1 = ac1.createGain()
+  gain1.gain.setValueAtTime(0.5, ac1.currentTime);
+
+  osc1.connect(gain1);
+  gain1.connect(dest1);
+  osc1.start();
+
+  const ac2 = new AudioContext({sampleRate: 44100});
+  const osc2 = ac2.createOscillator();
+  const dest2 = ac2.createMediaStreamDestination();
+  const gain2 = ac2.createGain()
+  gain2.gain.setValueAtTime(0.5, ac2.currentTime);
+
+  osc2.connect(gain2);
+  gain2.connect(dest2);
+  osc2.start();
+
+  const ac3 = new AudioContext({sampleRate: 48000});
+  const osc3 = ac3.createOscillator();
+  const dest3 = ac3.createMediaStreamDestination();
+  const gain3 = ac3.createGain()
+  gain3.gain.setValueAtTime(0.5, ac3.currentTime);
+
+  osc3.connect(gain3);
+  gain3.connect(dest3);
+  osc3.start();
+
+  dest1.stream.addTrack(dest2.stream.getAudioTracks()[0]);
+  dest1.stream.addTrack(dest3.stream.getAudioTracks()[0]);
+
+  stream = dest1.stream;
+  player.srcObject = stream;
+  player.play();
 }
 
 </script>
