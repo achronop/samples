@@ -1,0 +1,67 @@
+<video id="video" height="120" autoplay></video><br>
+<button id="gum1">Start Microphone</button>
+<button id="gum2">Start Camera</button>
+<button id="gum3">Start Microphone & Camera</button>
+<button id="stopp">Stop!</button>
+<button id="list">Enumerate Devices!</button>
+<label><input type="checkbox" id="muted">Face-muted</label>
+<div id="div"><br></div>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+<script>
+const console = { log: msg => div.innerHTML += msg + "<br>" };
+
+const dumptrack = ([a,b],track) => `${a}${track.kind == "video" ? "Camera" : "Microphone"} (${track.readyState}): ${track.label}${b}`;
+
+async function gUM(constraints) {
+  try {
+    video.srcObject = await navigator.mediaDevices.getUserMedia(constraints);
+    for (const track of video.srcObject.getTracks()) {
+      console.log(dumptrack`${track}`);
+      track.onended = () => console.log(`${track.kind} track ${track.readyState}`);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+gum1.onclick = () => {
+  gUM({audio: true});
+};
+
+gum2.onclick = async () => {
+  gUM({video: true});
+};
+
+gum3.onclick = async () => {
+  gUM({video: true, audio: true});
+};
+
+stopp.onclick = () => {
+  for (const track of video.srcObject.getTracks()) {
+    track.stop();
+    track.onended();
+    console.log(dumptrack`${track}`);
+  }
+  video.srcObject = null;
+};
+
+muted.onclick = () => {
+  video.srcObject.getTracks().forEach(track => track.enabled = !muted.checked);
+};
+
+list.onclick = async () => {
+  let devices = await navigator.mediaDevices.enumerateDevices();
+  console.log(devices.length + " devices.");
+  for (let {kind, label, deviceId, groupId} of devices) {
+    console.log(`${kind}: ${label} id=${deviceId} group=${groupId}`);
+  }
+}
+
+navigator.mediaDevices.ondevicechange = () => {
+  console.log("device change!");
+  for (const track of video.srcObject.getTracks()) {
+    console.log(dumptrack`${track}`);
+  }
+}
+</script>
