@@ -1,0 +1,67 @@
+<audio id="player" controls></audio>
+<button type="button" id="b1">Sink 2</button>
+<button type="button" id="b2">Stop</button>
+<div id="div"><br></div>
+
+<script>
+var log = msg => div.innerHTML += msg + "<br>";
+
+const ac = new AudioContext({sampleRate: 48000});
+const osc = ac.createOscillator();
+const gain = ac.createGain();
+const dest = ac.createMediaStreamDestination();
+
+osc.connect(gain);
+gain.connect(dest);
+osc.start();
+
+let audioDevices = [];
+navigator.mediaDevices.enumerateDevices()
+.then((devices) => {
+  audioDevices = devices.filter(device => device.kind === 'audiooutput');
+  log("Found " + audioDevices.length + " output devices");
+});
+
+b1.onclick = () => {
+  player.setSinkId(audioDevices[1].deviceId)
+	.then( () => {
+	  log("Player: Audio is being played from sink 2: " + player.sinkId);
+	})
+	.catch( (error) => {
+	  log("Player: Sink 2 promise rejected: " + error);
+  });
+}
+
+b2.onclick = () => {
+  if (dest.stream)
+    dest.stream.getTracks().forEach(track => track.stop());
+}
+
+let t = dest.stream.getAudioTracks()[0];
+
+async function sendTrack(track, localStream) {
+  const pc1 = new RTCPeerConnection();
+  const pc2 = new RTCPeerConnection();
+
+  pc1.addEventListener('icecandidate', async e => await pc2.addIceCandidate(e.candidate));
+  pc1.addTrack(track, localStream);
+  const offer = await pc1.createOffer({
+    offerToReceiveAudio: 1
+  });
+  await pc1.setLocalDescription(offer);
+
+  pc2.addEventListener('icecandidate', async e => await pc1.addIceCandidate(e.candidate));
+  pc2.addEventListener('track', e => {
+    player.srcObject = e.streams[0];
+    player.play();
+  });
+  await pc2.setRemoteDescription(offer);
+  const answer = await pc2.createAnswer();
+
+  await pc2.setLocalDescription(answer);
+  await pc1.setRemoteDescription(answer);
+}
+
+sendTrack(t, dest.stream);
+
+</script>
