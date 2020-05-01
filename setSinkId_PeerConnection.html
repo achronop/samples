@@ -1,6 +1,8 @@
 <audio id="player" controls></audio>
-<button type="button" id="b1">Sink 2</button>
-<button type="button" id="b2">Stop</button>
+<button type="button" id="b1">Sink 1</button>
+<button type="button" id="b2">Sink 2</button>
+<button type="button" id="b3">Sink 3</button>
+<button type="button" id="b4">Stop</button>
 <div id="div"><br></div>
 
 <script>
@@ -23,16 +25,36 @@ navigator.mediaDevices.enumerateDevices()
 });
 
 b1.onclick = () => {
-  player.setSinkId(audioDevices[1].deviceId)
+  player.setSinkId(audioDevices[0].deviceId)
 	.then( () => {
-	  log("Player: Audio is being played from sink 2: " + player.sinkId);
+	  log("Player: Audio is being played from sink 1: " + player.sinkId);
 	})
 	.catch( (error) => {
-	  log("Player: Sink 2 promise rejected: " + error);
+	  log("Player: Sink 1 promise rejected: " + error);
   });
 }
 
 b2.onclick = () => {
+  player.setSinkId(audioDevices[1].deviceId)
+  .then( () => {
+    log("Player: Audio is being played from sink 2: " + player.sinkId);
+  })
+  .catch( (error) => {
+    log("Player: Sink 2 promise rejected: " + error);
+  });
+}
+
+b3.onclick = () => {
+  player.setSinkId(audioDevices[2].deviceId)
+  .then( () => {
+    log("Player: Audio is being played from sink 3: " + player.sinkId);
+  })
+  .catch( (error) => {
+    log("Player: Sink 3 promise rejected: " + error);
+  });
+}
+
+b4.onclick = () => {
   if (dest.stream)
     dest.stream.getTracks().forEach(track => track.stop());
 }
