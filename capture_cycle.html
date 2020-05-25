@@ -1,0 +1,18 @@
+ <html>
+ <head>
+     <script>
+       window.addEventListener('load', async () => {
+         const audio = document.getElementById('id_7')
+         const stream_0 = new MediaStream()
+         const element = document.createElement('div')
+         const stream_1 = audio.captureStream()
+         audio.srcObject = stream_1
+         //await element.requestFullscreen()
+         audio.srcObject = stream_0
+ 
+       })
+     </script>
+ </head>
+ <audio class='' id='id_7' src='16458a8af292bb4c6e7e3cd9cb3dfa398e2ec88e.mp3'></audio>
+ </html>
+
