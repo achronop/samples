@@ -1,5 +1,6 @@
 <video id="video" height="120" autoplay></video><br>
-<button id="gum">Start Camera!</button>
+<button id="gum">Start Camera and Mic!</button>
+<button id="gum2">Start Mic!</button>
 <button id="stopp">Stop!</button>
 <button id="list">Enumerate Devices!</button>
 <label><input type="checkbox" id="muted">Face-muted</label>
@@ -12,6 +13,14 @@ var log = msg => div.innerHTML += msg + "<br>";
 gum.onclick = async () => {
   try {
     video.srcObject = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+  } catch (e) {
+    log(e);
+  }
+};
+
+gum2.onclick = async () => {
+  try {
+    video.srcObject = await navigator.mediaDevices.getUserMedia({audio:true});
   } catch (e) {
     log(e);
   }
