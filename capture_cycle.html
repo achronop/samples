@@ -1,18 +1,38 @@
- <html>
- <head>
-     <script>
-       window.addEventListener('load', async () => {
-         const audio = document.getElementById('id_7')
-         const stream_0 = new MediaStream()
-         const element = document.createElement('div')
-         const stream_1 = audio.captureStream()
-         audio.srcObject = stream_1
-         //await element.requestFullscreen()
-         audio.srcObject = stream_0
- 
-       })
-     </script>
- </head>
- <audio class='' id='id_7' src='16458a8af292bb4c6e7e3cd9cb3dfa398e2ec88e.mp3'></audio>
- </html>
+<p>The stream is captured by this element.</p>
+<audio id=a1 controls="controls" src='a2002011001-e02-16kHz.wav'></audio>
+<p>In indirect cycle the stream is driven first to this element and re-captured.</p>
+<audio id=a2 controls="controls"></audio>
+<p/>
+<button type="button" id="b1">Direct cycle</button>
+<button type="button" id="b2">Indirect cycle</button>
+<button type="button" id="b3">Cycle through WebAudio</button>
+
+<script>
+
+b1.onclick = () => {
+  const s1 = a1.mozCaptureStream()
+  a1.srcObject = s1;
+}
+
+b2.onclick = () => {
+  const s1 = a1.mozCaptureStream()
+  a2.srcObject = s1;
+  const s2 = a2.mozCaptureStream();
+  a1.srcObject = s2;
+}
+
+b3.onclick = () => {
+  const s1 = a1.mozCaptureStream()
+
+  const ac = new AudioContext();
+  const source = ac.createMediaStreamSource(s1);
+  const dest = ac.createMediaStreamDestination();
+
+  source.connect(dest);
+
+  s2 = dest.stream;
+  a1.srcObject = s2;
+}
+
+</script>
 
