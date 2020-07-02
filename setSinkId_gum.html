@@ -1,11 +1,18 @@
 <p>
 Intial stream goes to Player 1.
-</p>
-<button type="button" id="b1">gUM audio</button>
-<button type="button" id="b6">gUM video</button>
-<button type="button" id="b7">gUM audio&video</button>
-<button type="button" id="b11">Audio Context</button>
-<button type="button" id="b19">Many Tracks</button>
+<p/>
+
+<input type="radio" name="action" id="b1">
+<label for="b1">gUM audio</label><br>
+<input type="radio" name="action" id="b6">
+<label for="b6">gUM video</label><br>
+<input type="radio" name="action" id="b7">
+<label for="b7">gUM audio and video</label><br>
+<input type="radio" name="action" id="b11">
+<label for="b11">Audio Context</label><br>
+<input type="radio" name="action" id="b19">
+<label for="b19">Many Tracks</label><br>
+
 <button type="button" id="b2">stop</button>
 <p/>
 <video controls="controls" id="player"></video>
@@ -125,6 +132,7 @@ if (player.setSinkId === undefined) {
         opt2.appendChild( document.createTextNode("Sink" + (i+1)) );
       }
       opt.value = audioDevices[i].deviceId;
+      opt2.value = audioDevices[i].deviceId;
       sinks.appendChild(opt);
       sinks2.appendChild(opt2);
     }
@@ -147,14 +155,19 @@ sinks2.onchange = () => {
 	  log("Player 2: Audio is being played from " + sinks2.options[sinks2.selectedIndex].text + ": " + player2.sinkId);
 	})
 	.catch( (error) => {
-	  log("Player 2: Sink 1 promise rejected: " + error);
+	  log("Player 2: " + sinks2.options[sinks2.selectedIndex].text + " promise rejected: " + error);
   });
 }
 
 b16.onclick = () =>
 {
-  player2.srcObject = stream;
-  player2.play();
+  if (!player2.srcObject) {
+    player2.srcObject = stream;
+    player2.play();
+  } else {
+    player2.srcObject = null;
+    player2.stop();
+  }
 }
 
 b17.onclick = () => {
