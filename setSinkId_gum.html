@@ -2,6 +2,7 @@
 Intial stream goes to Player 1.
 <p/>
 
+<p>
 <input type="radio" name="action" id="b1">
 <label for="b1">gUM audio</label><br>
 <input type="radio" name="action" id="b6">
@@ -12,8 +13,10 @@ Intial stream goes to Player 1.
 <label for="b11">Audio Context</label><br>
 <input type="radio" name="action" id="b19">
 <label for="b19">Many Tracks</label><br>
-
+<p>
+Press stop to choose an other action
 <button type="button" id="b2">stop</button>
+<p/>
 <p/>
 <video controls="controls" id="player"></video>
 <p/>
@@ -52,6 +55,7 @@ b1.onclick = () => {
       stream = s;
       player.srcObject = stream;
       player.play();
+      DisableRadioButtons(true);
     })
     .catch((err) => {
       log("gUM audio failed: " + err);
@@ -64,6 +68,7 @@ b6.onclick = () => {
       stream = s;
       player.srcObject = stream;
       player.play();
+      DisableRadioButtons(true);
     })
     .catch((err) => {
       log("gUM video failed: " + err);
@@ -76,6 +81,7 @@ b7.onclick = () => {
       stream = s;
       player.srcObject = stream;
       player.play();
+      DisableRadioButtons(true);
     })
     .catch((err) => {
       log("gUM video failed: " + err);
@@ -95,6 +101,62 @@ b11.onclick = () => {
   stream = dest.stream;
   player.srcObject = stream;
   player.play();
+  DisableRadioButtons(true);
+}
+
+b19.onclick = () => {
+  const ac1 = new AudioContext();
+  const osc1 = ac1.createOscillator();
+  const dest1 = ac1.createMediaStreamDestination();
+  const gain1 = ac1.createGain()
+  gain1.gain.setValueAtTime(0.5, ac1.currentTime);
+
+  osc1.connect(gain1);
+  gain1.connect(dest1);
+  osc1.start();
+
+  const ac2 = new AudioContext({sampleRate: 44100});
+  const osc2 = ac2.createOscillator();
+  const dest2 = ac2.createMediaStreamDestination();
+  const gain2 = ac2.createGain()
+  gain2.gain.setValueAtTime(0.5, ac2.currentTime);
+
+  osc2.connect(gain2);
+  gain2.connect(dest2);
+  osc2.start();
+
+  const ac3 = new AudioContext({sampleRate: 48000});
+  const osc3 = ac3.createOscillator();
+  const dest3 = ac3.createMediaStreamDestination();
+  const gain3 = ac3.createGain()
+  gain3.gain.setValueAtTime(0.5, ac3.currentTime);
+
+  osc3.connect(gain3);
+  gain3.connect(dest3);
+  osc3.start();
+
+  dest1.stream.addTrack(dest2.stream.getAudioTracks()[0]);
+  dest1.stream.addTrack(dest3.stream.getAudioTracks()[0]);
+
+  stream = dest1.stream;
+  player.srcObject = stream;
+  player.play();
+  DisableRadioButtons(true);
+}
+
+function DisableRadioButtons(state) {
+  b1.disabled = state;
+  b6.disabled = state;
+  b7.disabled = state;
+  b11.disabled = state;
+  b19.disabled = state;
+  if (!state) {
+    b1.checked = state;
+    b6.checked = state;
+    b7.checked = state;
+    b11.checked = state;
+    b19.checked = state;
+  }
 }
 
 b8.onclick = () => {
@@ -109,6 +171,7 @@ b9.onclick = () => {
 b2.onclick = () => {
   if (stream)
     stream.getTracks().forEach(track => track.stop());
+  DisableRadioButtons(false);
 }
 
 let audioDevices = [];
@@ -177,45 +240,6 @@ b17.onclick = () => {
 
 b18.onclick = () => {
   player2.src="a2002011001-e02-16kHz.wav";
-}
-
-b19.onclick = () => {
-  const ac1 = new AudioContext();
-  const osc1 = ac1.createOscillator();
-  const dest1 = ac1.createMediaStreamDestination();
-  const gain1 = ac1.createGain()
-  gain1.gain.setValueAtTime(0.5, ac1.currentTime);
-
-  osc1.connect(gain1);
-  gain1.connect(dest1);
-  osc1.start();
-
-  const ac2 = new AudioContext({sampleRate: 44100});
-  const osc2 = ac2.createOscillator();
-  const dest2 = ac2.createMediaStreamDestination();
-  const gain2 = ac2.createGain()
-  gain2.gain.setValueAtTime(0.5, ac2.currentTime);
-
-  osc2.connect(gain2);
-  gain2.connect(dest2);
-  osc2.start();
-
-  const ac3 = new AudioContext({sampleRate: 48000});
-  const osc3 = ac3.createOscillator();
-  const dest3 = ac3.createMediaStreamDestination();
-  const gain3 = ac3.createGain()
-  gain3.gain.setValueAtTime(0.5, ac3.currentTime);
-
-  osc3.connect(gain3);
-  gain3.connect(dest3);
-  osc3.start();
-
-  dest1.stream.addTrack(dest2.stream.getAudioTracks()[0]);
-  dest1.stream.addTrack(dest3.stream.getAudioTracks()[0]);
-
-  stream = dest1.stream;
-  player.srcObject = stream;
-  player.play();
 }
 
 </script>
