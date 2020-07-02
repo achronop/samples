@@ -21,10 +21,9 @@ Intial stream goes to Player 1.
 <p/>
 <button id="b16" type"button">Set stream to Player 2</button>
 <p/>
-<button id="b12" type"button">Set Sink 1</button>
-<button id="b13" type"button">Set Sink 2</button>
-<button id="b14" type"button">Set Sink 3</button>
-<button id="b15" type"button">Set Default Sink</button>
+<select name="sinks2" id="sinks2">
+  <option value="">default</option>
+</select>
 <p/>
 <button type="button" id="b17">src = null</button>
 <button type="button" id="b18">src = wav</button>
@@ -106,23 +105,31 @@ b2.onclick = () => {
 }
 
 let audioDevices = [];
-navigator.mediaDevices.getUserMedia({audio: true})
-.then((s) => navigator.mediaDevices.enumerateDevices())
-.then((devices) => {
-  audioDevices = devices.filter(device => device.kind === 'audiooutput');
-  log("Found " + audioDevices.length + " output devices");
+if (player.setSinkId === undefined) {
+  log("The pref media.setsinkid.enabled is false toggle to true");
+} else {
+  navigator.mediaDevices.getUserMedia({audio: true})
+  .then((s) => navigator.mediaDevices.enumerateDevices())
+  .then((devices) => {
+    audioDevices = devices.filter(device => device.kind === 'audiooutput');
+    log("Found " + audioDevices.length + " output devices");
 
-  for (var i = 0; i < audioDevices.length; i++) {
-    var opt = document.createElement('option');
-    if (audioDevices[i].label !== "") {
-      opt.appendChild( document.createTextNode(audioDevices[i].label) );
-    } else {
-      opt.appendChild( document.createTextNode("Sink" + (i+1)) );
+    for (var i = 0; i < audioDevices.length; i++) {
+      var opt = document.createElement('option');
+      var opt2 = document.createElement('option');
+      if (audioDevices[i].label !== "") {
+        opt.appendChild( document.createTextNode(audioDevices[i].label) );
+        opt2.appendChild( document.createTextNode(audioDevices[i].label) );
+      } else {
+        opt.appendChild( document.createTextNode("Sink" + (i+1)) );
+        opt2.appendChild( document.createTextNode("Sink" + (i+1)) );
+      }
+      opt.value = audioDevices[i].deviceId;
+      sinks.appendChild(opt);
+      sinks2.appendChild(opt2);
     }
-    opt.value = audioDevices[i].deviceId;
-    sinks.appendChild(opt);
-  }
-});
+  });
+}
 
 sinks.onchange = () => {
   player.setSinkId(sinks.options[sinks.selectedIndex].value)
@@ -134,47 +141,13 @@ sinks.onchange = () => {
   });
 }
 
-b12.onclick = () =>
-{
-  player2.setSinkId(audioDevices[0].deviceId)
+sinks2.onchange = () => {
+  player2.setSinkId(sinks2.options[sinks2.selectedIndex].value)
 	.then( () => {
-	  log("Player 2: Audio is being played from sink 1: " + player2.sinkId);
+	  log("Player 2: Audio is being played from " + sinks2.options[sinks2.selectedIndex].text + ": " + player2.sinkId);
 	})
 	.catch( (error) => {
 	  log("Player 2: Sink 1 promise rejected: " + error);
-  });
-}
-
-b13.onclick = () =>
-{
-  player2.setSinkId(audioDevices[1].deviceId)
-	.then( () => {
-	  log("Player 2: Audio is being played from sink 2: " + player2.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 2: Sink 2 promise rejected: " + error);
-	});
-}
-
-b14.onclick = () =>
-{
-  player2.setSinkId(audioDevices[2].deviceId)
-	.then( () => {
-	  log("Player 2: Audio is being played from sink 3: " + player2.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 2: Sink 3 promise rejected: " + error);
-	});
-}
-
-b15.onclick = () =>
-{
-  player2.setSinkId("")
-	.then( () => {
-	  log("Player 2: Audio is being played from sink default: " + player2.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 2: Sink default promise rejected: " + error);
   });
 }
 
