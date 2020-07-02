@@ -10,10 +10,9 @@ Intial stream goes to Player 1.
 <p/>
 <video controls="controls" id="player"></video>
 <p/>
-<button id="b3" type"button">Set Sink 1</button>
-<button id="b4" type"button">Set Sink 2</button>
-<button id="b5" type"button">Set Sink 3</button>
-<button id="b10" type"button">Set Default Sink</button>
+<select name="sinks" id="sinks">
+  <option value="">default</option>
+</select>
 <p/>
 <button type="button" id="b8">src = null</button>
 <button type="button" id="b9">src = wav</button>
@@ -40,6 +39,7 @@ player.volume = 0.3;
 player.volume = 0.3;
 
 let stream;
+
 b1.onclick = () => {
   navigator.mediaDevices.getUserMedia({audio: true})
     .then((s) => {
@@ -106,53 +106,31 @@ b2.onclick = () => {
 }
 
 let audioDevices = [];
-navigator.mediaDevices.enumerateDevices()
+navigator.mediaDevices.getUserMedia({audio: true})
+.then((s) => navigator.mediaDevices.enumerateDevices())
 .then((devices) => {
   audioDevices = devices.filter(device => device.kind === 'audiooutput');
   log("Found " + audioDevices.length + " output devices");
+
+  for (var i = 0; i < audioDevices.length; i++) {
+    var opt = document.createElement('option');
+    if (audioDevices[i].label !== "") {
+      opt.appendChild( document.createTextNode(audioDevices[i].label) );
+    } else {
+      opt.appendChild( document.createTextNode("Sink" + (i+1)) );
+    }
+    opt.value = audioDevices[i].deviceId;
+    sinks.appendChild(opt);
+  }
 });
 
-b3.onclick = () => 
-{
-  player.setSinkId(audioDevices[0].deviceId)
+sinks.onchange = () => {
+  player.setSinkId(sinks.options[sinks.selectedIndex].value)
 	.then( () => {
-	  log("Player 1: Audio is being played from sink 1: " + player.sinkId);
+	  log("Player 1: Audio is being played from " + sinks.options[sinks.selectedIndex].text + ": " + player.sinkId);
 	})
 	.catch( (error) => {
 	  log("Player 1: Sink 1 promise rejected: " + error);
-  });
-}
-
-b4.onclick = () =>
-{
-  player.setSinkId(audioDevices[1].deviceId)
-	.then( () => {
-	  log("Player 1: Audio is being played from sink 2: " + player.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 1: Sink 2 promise rejected: " + error);
-	});
-}
-
-b5.onclick = () =>
-{
-  player.setSinkId(audioDevices[2].deviceId)
-	.then( () => {
-	  log("Player 1: Audio is being played from sink 3: " + player.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 1: Sink 3 promise rejected: " + error);
-	});
-}
-
-b10.onclick = () =>
-{
-  player.setSinkId("")
-	.then( () => {
-	  log("Player 1: Audio is being played from sink default: " + player.sinkId);
-	})
-	.catch( (error) => {
-	  log("Player 1: Sink default promise rejected: " + error);
   });
 }
 
