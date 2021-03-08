@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Audio Worklet loopback test</title>
+  </head>
+  <body>
+    <h1>Loopback test</h1>
+    <ol>
+      <li>Make sure your Bluetooth device is your default input and output device.</li>
+      <li>Play music. Verify that you hear high-quality music.</li>
+      <li>Hit one of the buttons below. You should hear a shift to a low-quality mode.</li>
+      <li>Talk: in Chrome you should hear a choppy version of your own voice.</li>
+    </ol>
+    <audio id="output"></audio>
+    <div>
+      <button id="worklet">Start with worklet</button>
+    </div>
+
+    <div>
+      <button id="noworklet">Start without worklet</button>
+    </div>
+    <script>
+      async function loopback(worklet) {
+        const context = new AudioContext({
+          latencyHint: 0,
+        });
+        const input = await window.navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: 1,
+          },
+        });
+
+        const source = context.createMediaStreamSource(input);
+        const destination = context.createMediaStreamDestination();
+
+        if (worklet) {
+          const module = await context.audioWorklet.addModule('./loopback-processor.js');
+          console.info('Got module.', module);
+          const node = new AudioWorkletNode(context, 'loopback-worklet', {
+            numberOfInputs: 1,
+            numberOfOutputs: 1,
+            outputChannelCount: [1]
+          });
+
+          console.info('Connecting to Audio Worklet.');
+          source.connect(node);
+          node.connect(destination);
+        } else {
+          console.info('Piping straight through.');
+          source.connect(destination);
+        }
+
+        const outputElement = document.getElementById('output');
+        outputElement.srcObject = destination.stream;
+        outputElement.play();
+      }
+
+      document.getElementById('worklet').onclick = () => loopback(true);
+      document.getElementById('noworklet').onclick = () => loopback(false);
+    </script>
+
+  </body>
+</html>
