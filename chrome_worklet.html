@@ -27,7 +27,13 @@
         const context = new AudioContext({
           latencyHint: 0,
         });
-        const input = await window.navigator.mediaDevices.getUserMedia({audio: true});
+        //const input = await window.navigator.mediaDevices.getUserMedia({audio: true});
+        const input = await navigator.mediaDevices.getUserMedia({audio: {
+            autoGainControl: false,
+            echoCancellation: false,
+            noiseSuppression: false,
+          }
+        });
 
         const source = context.createMediaStreamSource(input);
         const destination = context.createMediaStreamDestination();
