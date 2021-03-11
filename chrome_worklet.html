@@ -10,30 +10,53 @@
     <h1>Loopback test</h1>
     <ol>
       <li>Make sure your Bluetooth device is your default input and output device.</li>
-      <li>Play music. Verify that you hear high-quality music.</li>
       <li>Hit one of the buttons below. You should hear a shift to a low-quality mode.</li>
       <li>Talk: in Chrome you should hear a choppy version of your own voice.</li>
     </ol>
     <audio id="output"></audio>
     <div>
+      <p>getUserMedia processing off</p>
+      <input type="checkbox" id="processing">
+      <p>AudioContext sample rate:</p>
+      <input type="radio" id="default" name="rate" checked>
+      <label for="rate16K">default</label><br>
+      <input type="radio" id="rate16K" name="rate">
+      <label for="rate16K">1600</label><br>
+      <input type="radio" id="rate48K" name="rate">
+      <label for="rate48K">4800</label><br>
+    </div>
+    <div>
       <button id="worklet">Start with worklet</button>
     </div>
-
     <div>
       <button id="noworklet">Start without worklet</button>
     </div>
+    <div>
+      <button id="restart">Restart destination</button>
+    </div>
     <script>
+      let context;
       async function loopback(worklet) {
-        const context = new AudioContext({
-          sampleRate: 16000,
-        });
-        //const input = await window.navigator.mediaDevices.getUserMedia({audio: true});
-        const input = await navigator.mediaDevices.getUserMedia({audio: {
-            autoGainControl: false,
-            echoCancellation: false,
-            noiseSuppression: false,
-          }
-        });
+        let context_params = {};
+        if (rate16K.checked) {
+          context_params = { sampleRate: 16000 };
+        }
+        if (rate48K.checked) {
+          context_params = { sampleRate: 48000 };
+        }
+        context = new AudioContext(context_params);
+        console.log(context_params);
+
+        let constrains = {audio: true};
+        if (processing.checked) {
+          constrains = {audio: {
+              autoGainControl: false,
+              echoCancellation: false,
+              noiseSuppression: false,
+            }};
+        }
+
+        const input = await navigator.mediaDevices.getUserMedia(constrains);
 
         const source = context.createMediaStreamSource(input);
         const destination = context.createMediaStreamDestination();
@@ -58,6 +81,7 @@
 
       document.getElementById('worklet').onclick = () => loopback(true);
       document.getElementById('noworklet').onclick = () => loopback(false);
+      document.getElementById('restart').onclick = () => context && context.destination.maxChannelCount;
     </script>
 
   </body>
