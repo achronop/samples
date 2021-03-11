@@ -27,11 +27,7 @@
         const context = new AudioContext({
           latencyHint: 0,
         });
-        const input = await window.navigator.mediaDevices.getUserMedia({
-          audio: {
-            channelCount: 1,
-          },
-        });
+        const input = await window.navigator.mediaDevices.getUserMedia({audio: true});
 
         const source = context.createMediaStreamSource(input);
         const destination = context.createMediaStreamDestination();
@@ -39,11 +35,7 @@
         if (worklet) {
           const module = await context.audioWorklet.addModule('./loopback-processor.js');
           console.info('Got module.', module);
-          const node = new AudioWorkletNode(context, 'loopback-worklet', {
-            numberOfInputs: 1,
-            numberOfOutputs: 1,
-            outputChannelCount: [1]
-          });
+          const node = new AudioWorkletNode(context, 'loopback-worklet');
 
           console.info('Connecting to Audio Worklet.');
           source.connect(node);
