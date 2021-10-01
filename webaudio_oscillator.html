@@ -1,0 +1,29 @@
+<button type="button" id="start">Start to AudioContext.destination</button>
+<button type="button" id="start_player">Start to audio element</button>
+<audio id="player" controls></audio>
+<script>
+
+let ac;
+let osc;
+start.onclick = () => {
+  ac = new AudioContext();
+  osc = ac.createOscillator();
+  osc.connect(ac.destination);
+
+  ac.resume();
+  osc.start();
+}
+
+start_player.onclick = () => {
+  ac = new AudioContext();
+  osc = ac.createOscillator();
+  const dest = ac.createMediaStreamDestination();
+  osc.connect(dest);
+
+  ac.resume();
+  osc.start();
+
+  player.srcObject = dest.stream;
+  player.play();
+}
+</script>
