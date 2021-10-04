@@ -1,0 +1,17 @@
+<div id="div" style="white-space: pre;"></div>
+
+<script>
+//var console = { log: msg => div.innerHTML += msg + "<br>" };
+
+let iframe = document.createElement("iframe");
+iframe.src = "https://hh4sazg8a5.execute-api.us-east-1.amazonaws.com/Prod/";
+iframe.sandbox = "allow-forms allow-modals allow-scripts allow-same-origin";
+iframe.allow = "camera;microphone";
+iframe.width = 1000;
+iframe.height = 1000;
+
+document.documentElement.appendChild(iframe);
+new Promise(resolve => iframe.onload = resolve)
+  .then(() => console.log("done"));
+
+</script>
