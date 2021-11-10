@@ -1,0 +1,54 @@
+<h1>Hit start</h1>
+<h1>Speak to hear yourself echo</h1>
+<h1>Count to 5</h1>
+<h1>Switch to a new tab</h1>
+<h1>Stay silent for 5 seconds</h1>
+<h1>Count to 5 again</h1>
+<h1>Notice you don't hear yourself on the other tab</h1>
+<h1>Come back to this tab</h1>
+<h1>Speak and notice distorted voice</h1>
+<h1>Switch tab a few more times with or without counting</h1>
+<h1>In every switch speak and notice that distortion is fixed at some point</h1>
+
+<div>
+  <button id="start-button">Start</button>
+</div>
+
+<audio id="audioRef" controls></audio>
+
+<script>
+
+let context;
+
+const doStart = async () => {
+  if (!context)
+    context = new window.AudioContext();
+
+  const audioRef = document.getElementById('audioRef');
+
+  let stream;
+  try {
+    stream = await window.navigator.mediaDevices.getUserMedia({ audio: true});
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+  console.log(`Got stream: ${stream}`);
+
+  const source = context.createMediaStreamSource(stream)
+  const destination = context.createMediaStreamDestination();
+
+  // Test example where we pass through input to the audio element.
+  // This causes distorted audio.
+  source.connect(destination);
+  audioRef.srcObject = destination.stream;
+  audioRef.play();
+
+  // Test example where we pass through input to the context destination.
+  // This works fine.
+  //source.connect(context.destination);
+};
+
+document.getElementById('start-button').onclick = doStart;
+</script>
+ 
